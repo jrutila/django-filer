@@ -237,5 +237,5 @@ class FolderAdmin(PrimitivePermissionAwareModelAdmin):
                 'limit_search_to_folder': limit_search_to_folder,
                 'is_popup': popup_status(request),
                 'select_folder': selectfolder_status(request),
-                'root_path': "/%s" % admin.site.root_path, # needed in the admin/base.html template for logout links and stuff 
+                'root_path': reverse('admin:index'),
             }, context_instance=RequestContext(request))
