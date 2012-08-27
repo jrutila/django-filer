@@ -36,7 +36,7 @@ class FileAdmin(PrimitivePermissionAwareModelAdmin):
     def build_fieldsets(cls, extra_main_fields=(), extra_advanced_fields=(), extra_fieldsets=()):
         fieldsets = (
             (None, {
-                'fields': ('name', 'owner', 'description',) + extra_main_fields,
+                'fields': ('name', 'owner', 'description', 'tags',) + extra_main_fields,
             }),
             (_('Advanced'), {
                 'fields': ('file', 'sha1',) + extra_advanced_fields,

@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 from django.template import Library
+from django import template
 import math
 
 register = Library()
@@ -100,3 +101,31 @@ def filesize(bytes, format='auto1024'):
         bytes = bytes >> (10 * (base - 1))
         return bytes / 1024.0
 register.filter(filesize)
+
+from looptags import Loop
+from ..models.filemodels import File
+
+@register.tag('fileloop')
+class WhileNode(template.Node):
+    child_nodelists = ('nodelist_loop',)
+
+    def __init__(self, parser, token):
+        bits = token.split_contents()[1:]
+        self.var = template.defaulttags.TemplateIfParser(parser, bits).parse()
+        self.nodelist_loop = parser.parse(('endfileloop',))
+        parser.delete_first_token()
+
+    def __rer__(self):
+        return "<While node>"
+
+    def __iter__(self):
+        return self.nodelist_loop
+
+    def render(self, context):
+        loop = Loop('fileloop', context, self.nodelist_loop)
+        eval_var = self.var.eval
+        tags = eval_var(context)
+        for f in File.objects.filter(tags__in=tags.all()).distinct('id'): #[ t.name for t in tags.all() ]):
+          context['file'] = f
+          loop.next()
+        return loop.render(close=True)

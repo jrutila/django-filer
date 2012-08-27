@@ -12,6 +12,7 @@ from polymorphic import PolymorphicModel, PolymorphicManager
 import hashlib
 import os
 
+from taggit.managers import TaggableManager
 
 class FileManager(PolymorphicManager):
     def find_all_duplicates(self):
@@ -60,6 +61,8 @@ class File(PolymorphicModel, mixins.IconsMixin):
                     'to anyone.'))
 
     objects = FileManager()
+
+    tags = TaggableManager()
 
     @classmethod
     def matches_file_type(cls, iname, ifile, request):
